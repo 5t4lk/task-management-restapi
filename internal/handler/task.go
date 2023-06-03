@@ -72,7 +72,32 @@ func (h *Handler) getTaskById(c *gin.Context) {
 }
 
 func (h *Handler) updateTask(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
+		return
+	}
+
+	var input types.UpdateTaskInput
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.services.Task.Update(userId, id, input); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, StatusResponse{
+		"ok"},
+	)
 }
 
 func (h *Handler) deleteTask(c *gin.Context) {
