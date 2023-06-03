@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -32,7 +33,6 @@ func main() {
 		Username: viper.GetString("db.username"),
 		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   viper.GetString("db.dbname"),
-		SSLMode:  viper.GetString("db.sslmode"),
 	})
 	if err != nil {
 		logrus.Fatalf("error occured while initializating database: %s", err.Error())
