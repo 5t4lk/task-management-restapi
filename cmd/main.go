@@ -68,6 +68,6 @@ func main() {
 
 func initConfig() error {
 	viper.AddConfigPath("configs")
-	viper.SetConfigFile("config")
+	viper.SetConfigName("config")
 	return viper.ReadInConfig()
 }
