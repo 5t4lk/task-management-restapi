@@ -13,6 +13,7 @@ type Authorization interface {
 
 type Task interface {
 	Create(userId int, task types.Task) (int, error)
+	GetAll(userId int) ([]types.Task, error)
 }
 
 type Service struct {
