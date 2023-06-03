@@ -24,3 +24,7 @@ func (t *TaskService) GetAll(userId int) ([]types.Task, error) {
 func (t *TaskService) GetById(userId int, taskId int) (types.Task, error) {
 	return t.repo.GetById(userId, taskId)
 }
+
+func (t *TaskService) Update(userId, listId int, input types.UpdateTaskInput) error {
+	return t.repo.Update(userId, listId, input)
+}
