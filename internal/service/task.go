@@ -20,3 +20,7 @@ func (t *TaskService) Create(userId int, task types.Task) (int, error) {
 func (t *TaskService) GetAll(userId int) ([]types.Task, error) {
 	return t.repo.GetAll(userId)
 }
+
+func (t *TaskService) GetById(userId int, taskId int) (types.Task, error) {
+	return t.repo.GetById(userId, taskId)
+}
