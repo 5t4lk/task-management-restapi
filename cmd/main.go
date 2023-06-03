@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -45,6 +46,9 @@ func main() {
 	srv := new(server.Server)
 	go func() {
 		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			if err == http.ErrServerClosed {
+				return
+			}
 			logrus.Fatalf("error occurred while running http server: %s", err.Error())
 		}
 	}()
