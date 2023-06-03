@@ -14,6 +14,7 @@ type Authorization interface {
 type Task interface {
 	Create(userId int, task types.Task) (int, error)
 	GetAll(userId int) ([]types.Task, error)
+	GetById(userId int, taskId int) (types.Task, error)
 }
 
 type Repository struct {
