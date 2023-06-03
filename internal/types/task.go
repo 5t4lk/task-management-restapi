@@ -5,13 +5,13 @@ type Task struct {
 	Title       string `json:"title" db:"title" binding:"required"`
 	Description string `json:"description" db:"description" binding:"required"`
 	Status      string `json:"status" db:"status"`
-	EndDate     string `json:"endDate" db:"end_date"`
+	EndDate     string `json:"end_date" db:"end_date"`
 }
 
 type UsersTask struct {
-	Id     int
-	UserId int
-	TaskId int
+	Id     int `json:"id" db:"id"`
+	UserId int `json:"userId" db:"user_id"`
+	TaskId int `json:"taskId" db:"task_id"`
 }
 
 type TaskItem struct {
