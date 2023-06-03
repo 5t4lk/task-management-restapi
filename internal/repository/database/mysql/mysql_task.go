@@ -3,6 +3,8 @@ package mysql
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
+	"strings"
 	"task-management/internal/types"
 )
 
@@ -61,4 +63,46 @@ func (t *TaskMySQL) GetById(userId int, taskId int) (types.Task, error) {
 	err := t.db.Get(&task, query, userId, taskId)
 
 	return task, err
+}
+
+func (t *TaskMySQL) Update(userId, listId int, input types.UpdateTaskInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title = ?"))
+		args = append(args, *input.Title)
+	}
+
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description = ?"))
+		args = append(args, *input.Description)
+	}
+
+	if input.EndDate != nil {
+		setValues = append(setValues, fmt.Sprintf("end_date = ?"))
+		args = append(args, *input.EndDate)
+	}
+
+	if input.Status != nil {
+		setValues = append(setValues, fmt.Sprintf("status = ?"))
+		args = append(args, *input.Status)
+	}
+
+	if input.Done != nil {
+		setValues = append(setValues, fmt.Sprintf("done = ?"))
+		args = append(args, *input.Done)
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s tl INNER JOIN %s ul ON tl.id = ul.task_id SET %s WHERE ul.task_id = ? AND ul.user_id = ?",
+		taskTable, userTasksTable, setQuery)
+	args = append(args, listId, userId)
+
+	logrus.Debugf("updateQuery: %s", query)
+	logrus.Debugf("args: %v", args)
+
+	_, err := t.db.Exec(query, args...)
+	return err
 }
