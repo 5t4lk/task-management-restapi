@@ -45,6 +45,8 @@ func main() {
 			logrus.Fatalf("error occurred while running http server: %s", err.Error())
 		}
 	}()
+
+	logrus.Print("Task Management started")
 }
 
 func initConfig() error {
