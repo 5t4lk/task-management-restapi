@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
+	"os/signal"
+	"syscall"
 	"task-management/internal/handler"
 	"task-management/internal/repository"
 	"task-management/internal/repository/database/mysql"
@@ -47,6 +50,20 @@ func main() {
 	}()
 
 	logrus.Print("Task Management started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Print("Task Management Shutting Down")
+
+	if err := srv.ShutDown(context.Background()); err != nil {
+		logrus.Fatalf("error occurred on server shutting down: %s", err.Error())
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Fatalf("error occurred on database closing: %s", err.Error())
+	}
 }
 
 func initConfig() error {
