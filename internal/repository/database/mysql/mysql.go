@@ -15,12 +15,11 @@ type Config struct {
 	Username string
 	Password string
 	DBName   string
-	SSLMode  string
 }
 
 func NewMySQLDb(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Open("mysql", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBName, cfg.SSLMode))
+	db, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName))
 	if err != nil {
 		return nil, err
 	}
