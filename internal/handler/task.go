@@ -31,7 +31,21 @@ func (h *Handler) createTask(c *gin.Context) {
 }
 
 func (h *Handler) getAllTasks(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
+	tasks, err := h.services.Task.GetAll(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, types.GetAllTasksResponse{
+		Data: tasks,
+	})
 }
 
 func (h *Handler) getTaskById(c *gin.Context) {
