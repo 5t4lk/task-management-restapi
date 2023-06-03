@@ -22,5 +22,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("sign-in", h.signIn)
 	}
 
+	api := router.Group("/api")
+	{
+		tasks := api.Group("/tasks")
+		{
+			tasks.POST("/", h.createTask)
+			tasks.GET("/", h.getAllTasks)
+			tasks.GET("/:id", h.getTaskById)
+			tasks.PUT("/:id", h.updateTask)
+			tasks.DELETE("/:id", h.deleteTask)
+		}
+	}
+
 	return router
 }
