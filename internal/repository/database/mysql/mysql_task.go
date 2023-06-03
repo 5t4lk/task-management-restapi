@@ -33,7 +33,7 @@ func (t *TaskMySQL) Create(userId int, task types.Task) (int, error) {
 		return 0, err
 	}
 
-	createUsersTaskQuery := fmt.Sprintf("INSERT INTO %s (user_id, task_id) VALUES (?, ?)", userTasks)
+	createUsersTaskQuery := fmt.Sprintf("INSERT INTO %s (user_id, task_id) VALUES (?, ?)", userTasksTable)
 	_, err = tx.Exec(createUsersTaskQuery, userId, id)
 	if err != nil {
 		tx.Rollback()
@@ -41,4 +41,14 @@ func (t *TaskMySQL) Create(userId int, task types.Task) (int, error) {
 	}
 
 	return int(id), tx.Commit()
+}
+
+func (t *TaskMySQL) GetAll(userId int) ([]types.Task, error) {
+	var tasks []types.Task
+
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description, tl.status, tl.end_date FROM %s tl INNER JOIN %s ul on tl.id = ul.task_id WHERE ul.user_id = ?",
+		taskTable, userTasksTable)
+	err := t.db.Select(&tasks, query, userId)
+
+	return tasks, err
 }
