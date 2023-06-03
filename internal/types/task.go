@@ -28,3 +28,7 @@ type TasksItem struct {
 	TaskId int
 	ItemId int
 }
+
+type GetAllTasksResponse struct {
+	Data []Task `json:"data"`
+}
