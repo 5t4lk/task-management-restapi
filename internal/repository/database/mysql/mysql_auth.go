@@ -29,3 +29,11 @@ func (a *AuthMySQL) CreateUser(user types.User) (int, error) {
 
 	return int(id), nil
 }
+
+func (a *AuthMySQL) GetUser(username, password string) (types.User, error) {
+	var user types.User
+	query := fmt.Sprintf("SELECT id FROM %s WHERE username = ? AND password_hash = ?", usersTable)
+	err := a.db.Get(&user, query, username, password)
+
+	return user, err
+}
