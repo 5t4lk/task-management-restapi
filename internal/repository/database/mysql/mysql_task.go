@@ -52,3 +52,13 @@ func (t *TaskMySQL) GetAll(userId int) ([]types.Task, error) {
 
 	return tasks, err
 }
+
+func (t *TaskMySQL) GetById(userId int, taskId int) (types.Task, error) {
+	var task types.Task
+
+	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description, tl.status, tl.end_date FROM %s tl INNER JOIN %s ul on tl.id = ul.task_id WHERE ul.user_id = ? AND ul.task_id = ?",
+		taskTable, userTasksTable)
+	err := t.db.Get(&task, query, userId, taskId)
+
+	return task, err
+}
