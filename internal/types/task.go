@@ -32,3 +32,11 @@ type TasksItem struct {
 type GetAllTasksResponse struct {
 	Data []Task `json:"data"`
 }
+
+type UpdateTaskInput struct {
+	Title       *string `json:"title" db:"title"`
+	Description *string `json:"description" db:"description"`
+	Status      *string `json:"status" db:"status"`
+	EndDate     *string `json:"end_date" db:"end_date"`
+	Done        *bool   `json:"done" db:"done"`
+}
