@@ -11,12 +11,18 @@ type Authorization interface {
 	GetUser(username, password string) (types.User, error)
 }
 
+type Task interface {
+	Create(userId int, task types.Task) (int, error)
+}
+
 type Repository struct {
 	Authorization
+	Task
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: mysql.NewAuthMySQL(db),
+		Task:          mysql.NewTaskMySQL(db),
 	}
 }
