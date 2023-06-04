@@ -19,14 +19,20 @@ type Task interface {
 	Delete(userId, taskId int) error
 }
 
+type Item interface {
+	Create(taskId int, item types.TaskItem) (int, error)
+}
+
 type Repository struct {
 	Authorization
 	Task
+	Item
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: mysql.NewAuthMySQL(db),
 		Task:          mysql.NewTaskMySQL(db),
+		Item:          mysql.NewItemMySQL(db),
 	}
 }
