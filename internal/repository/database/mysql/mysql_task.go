@@ -65,7 +65,7 @@ func (t *TaskMySQL) GetById(userId int, taskId int) (types.Task, error) {
 	return task, err
 }
 
-func (t *TaskMySQL) Update(userId, listId int, input types.UpdateTaskInput) error {
+func (t *TaskMySQL) Update(userId, taskId int, input types.UpdateTaskInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 
@@ -98,11 +98,19 @@ func (t *TaskMySQL) Update(userId, listId int, input types.UpdateTaskInput) erro
 
 	query := fmt.Sprintf("UPDATE %s tl INNER JOIN %s ul ON tl.id = ul.task_id SET %s WHERE ul.task_id = ? AND ul.user_id = ?",
 		taskTable, userTasksTable, setQuery)
-	args = append(args, listId, userId)
+	args = append(args, taskId, userId)
 
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %v", args)
 
 	_, err := t.db.Exec(query, args...)
+	return err
+}
+
+func (t *TaskMySQL) Delete(userId, taskId int) error {
+	query := fmt.Sprintf("DELETE tl FROM %s tl JOIN %s ul ON tl.id = ul.task_id WHERE ul.user_id = ? AND ul.task_id = ?",
+		taskTable, userTasksTable)
+	_, err := t.db.Exec(query, userId, taskId)
+
 	return err
 }
