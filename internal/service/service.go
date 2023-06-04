@@ -19,14 +19,20 @@ type Task interface {
 	Delete(userId, taskId int) error
 }
 
+type Item interface {
+	Create(userId, taskId int, item types.TaskItem) (int, error)
+}
+
 type Service struct {
 	Authorization
 	Task
+	Item
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		Task:          NewTaskService(repos.Task),
+		Item:          NewItemService(repos.Item),
 	}
 }
