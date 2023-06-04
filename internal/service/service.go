@@ -15,7 +15,8 @@ type Task interface {
 	Create(userId int, task types.Task) (int, error)
 	GetAll(userId int) ([]types.Task, error)
 	GetById(userId int, taskId int) (types.Task, error)
-	Update(userId, listId int, input types.UpdateTaskInput) error
+	Update(userId, taskId int, input types.UpdateTaskInput) error
+	Delete(userId, taskId int) error
 }
 
 type Service struct {
