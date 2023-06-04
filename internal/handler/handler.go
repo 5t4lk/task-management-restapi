@@ -32,6 +32,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			tasks.PUT("/:id", h.updateTask)
 			tasks.DELETE("/:id", h.deleteTask)
 		}
+		items := api.Group(":id/items")
+		{
+			items.POST("/", h.createItem)
+		}
 	}
 
 	return router
