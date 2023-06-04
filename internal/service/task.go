@@ -25,6 +25,10 @@ func (t *TaskService) GetById(userId int, taskId int) (types.Task, error) {
 	return t.repo.GetById(userId, taskId)
 }
 
-func (t *TaskService) Update(userId, listId int, input types.UpdateTaskInput) error {
-	return t.repo.Update(userId, listId, input)
+func (t *TaskService) Update(userId, taskId int, input types.UpdateTaskInput) error {
+	return t.repo.Update(userId, taskId, input)
+}
+
+func (t *TaskService) Delete(userId, taskId int) error {
+	return t.repo.Delete(userId, taskId)
 }
