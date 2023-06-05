@@ -41,6 +41,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			item.GET("/:id", h.getItemById)
 			item.PUT("/:id", h.updateItem)
+			item.DELETE("/:id", h.deleteItem)
 		}
 	}
 
