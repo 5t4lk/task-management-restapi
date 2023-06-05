@@ -21,9 +21,9 @@ type TaskItem struct {
 }
 
 type TasksItem struct {
-	Id     int
-	TaskId int
-	ItemId int
+	Id     int `json:"id" db:"id"`
+	TaskId int `json:"taskId" db:"task_id"`
+	ItemId int `json:"itemId" db:"item_id"`
 }
 
 type GetAllTasksResponse struct {
