@@ -37,3 +37,8 @@ type UpdateTaskInput struct {
 	EndDate     *string `json:"end_date" db:"end_date"`
 	Done        *bool   `json:"done" db:"done"`
 }
+
+type UpdateItemInput struct {
+	Title       *string `json:"title" db:"title"`
+	Description *string `json:"description" db:"description"`
+}
