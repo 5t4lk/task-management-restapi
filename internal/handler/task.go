@@ -113,7 +113,7 @@ func (h *Handler) deleteTask(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Delete(userId, id)
+	err = h.services.Task.Delete(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
