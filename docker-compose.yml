@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  server:
+    build: ./
+    container_name: "task-management"
+    ports:
+      - "8002:8002"
+    depends_on:
+      - mysql
+    environment:
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_HOST=mysql
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+    volumes:
+      - ./configs:/app/configs
+    env_file:
+      - .env
+
+  mysql:
+    image: mysql:latest
+    container_name: "mysql"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USERNAME}
+    volumes:
+      - ./data/db:/var/lib/mysql
+    ports:
+      - "3310:3310"
