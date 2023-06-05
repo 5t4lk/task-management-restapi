@@ -23,6 +23,7 @@ type Item interface {
 	Create(userId, taskId int, item types.TaskItem) (int, error)
 	GetAll(userId, taskId int) ([]types.TaskItem, error)
 	GetById(userId, itemId int) (types.TaskItem, error)
+	Update(userId, itemId int, input types.UpdateItemInput) error
 }
 
 type Service struct {
