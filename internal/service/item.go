@@ -6,13 +6,19 @@ import (
 )
 
 type ItemService struct {
-	repo repository.Item
+	repo     repository.Item
+	taskRepo repository.Task
 }
 
-func NewItemService(repo repository.Item) *ItemService {
-	return &ItemService{repo: repo}
+func NewItemService(repo repository.Item, taskRepo repository.Task) *ItemService {
+	return &ItemService{repo: repo, taskRepo: taskRepo}
 }
 
 func (i *ItemService) Create(userId, taskId int, item types.TaskItem) (int, error) {
+	_, err := i.taskRepo.GetById(userId, taskId)
+	if err != nil {
+		return 0, err
+	}
+
 	return i.repo.Create(taskId, item)
 }
