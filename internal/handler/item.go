@@ -36,3 +36,25 @@ func (h *Handler) createItem(c *gin.Context) {
 		"id": id,
 	})
 }
+
+func (h *Handler) getAll(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	taskId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid task id param")
+		return
+	}
+
+	items, err := h.services.Item.GetAll(userId, taskId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, items)
+}
