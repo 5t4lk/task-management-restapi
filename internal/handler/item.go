@@ -106,3 +106,25 @@ func (h *Handler) updateItem(c *gin.Context) {
 
 	c.JSON(http.StatusOK, StatusResponse{"ok"})
 }
+
+func (h *Handler) deleteItem(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	itemId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid task id param")
+		return
+	}
+
+	err = h.services.Item.Delete(userId, itemId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, StatusResponse{"ok"})
+}
