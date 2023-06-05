@@ -40,5 +40,22 @@ func (i *itemMySQL) Create(taskId int, item types.TaskItem) (int, error) {
 		return 0, err
 	}
 
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return 0, err
+	}
+
 	return int(itemId), nil
+}
+
+func (i *itemMySQL) GetAll(userId, taskId int) ([]types.TaskItem, error) {
+	var items []types.TaskItem
+	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description FROM %s ti INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.task_id = li.task_id WHERE li.task_id = ? AND ul.user_id = ?",
+		itemsTable, tasksItemsTable, userTasksTable)
+	if err := i.db.Select(&items, query, taskId, userId); err != nil {
+		return nil, err
+	}
+
+	return items, nil
 }
