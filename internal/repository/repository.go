@@ -24,6 +24,7 @@ type Item interface {
 	GetAll(userId, taskId int) ([]types.TaskItem, error)
 	GetById(userId, itemId int) (types.TaskItem, error)
 	Update(userId, itemId int, input types.UpdateItemInput) error
+	Delete(userId, itemId int) error
 }
 
 type Repository struct {
