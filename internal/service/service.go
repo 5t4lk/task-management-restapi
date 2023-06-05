@@ -21,6 +21,7 @@ type Task interface {
 
 type Item interface {
 	Create(userId, taskId int, item types.TaskItem) (int, error)
+	GetAll(userId, taskId int) ([]types.TaskItem, error)
 }
 
 type Service struct {
