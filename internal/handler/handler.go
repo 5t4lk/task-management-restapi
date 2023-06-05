@@ -40,6 +40,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		item := api.Group("item")
 		{
 			item.GET("/:id", h.getItemById)
+			item.PUT("/:id", h.updateItem)
 		}
 	}
 
