@@ -34,3 +34,7 @@ func (i *ItemService) GetById(userId, itemId int) (types.TaskItem, error) {
 func (i *ItemService) Update(userId, itemId int, input types.UpdateItemInput) error {
 	return i.repo.Update(userId, itemId, input)
 }
+
+func (i *ItemService) Delete(userId, itemId int) error {
+	return i.repo.Delete(userId, itemId)
+}
