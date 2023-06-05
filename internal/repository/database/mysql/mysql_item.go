@@ -3,6 +3,8 @@ package mysql
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
+	"strings"
 	"task-management/internal/types"
 )
 
@@ -70,4 +72,31 @@ func (i *itemMySQL) GetById(userId, itemId int) (types.TaskItem, error) {
 	}
 
 	return item, nil
+}
+
+func (i *itemMySQL) Update(userId, itemId int, input types.UpdateItemInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title = ?"))
+		args = append(args, *input.Title)
+	}
+
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description = ?"))
+		args = append(args, *input.Description)
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s ti JOIN %s li ON ti.id = li.item_id JOIN %s ul ON li.task_id = ul.task_id SET %s WHERE ul.user_id = ? AND ti.id = ?",
+		itemsTable, tasksItemsTable, userTasksTable, setQuery)
+	args = append(args, userId, itemId)
+
+	logrus.Debugf("updateQuery: %s", query)
+	logrus.Debugf("args: %v", args)
+
+	_, err := i.db.Exec(query, args...)
+	return err
 }
