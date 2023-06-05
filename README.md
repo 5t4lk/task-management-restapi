@@ -59,7 +59,7 @@ Creates new task
 } 
 ```
 
-### GET /api/bookmarks
+### GET /api/tasks
 
 Returns all user tasks
 
