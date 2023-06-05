@@ -30,3 +30,7 @@ func (i *ItemService) GetAll(userId, taskId int) ([]types.TaskItem, error) {
 func (i *ItemService) GetById(userId, itemId int) (types.TaskItem, error) {
 	return i.repo.GetById(userId, itemId)
 }
+
+func (i *ItemService) Update(userId, itemId int, input types.UpdateItemInput) error {
+	return i.repo.Update(userId, itemId, input)
+}
