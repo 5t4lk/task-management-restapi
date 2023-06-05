@@ -22,3 +22,7 @@ func (i *ItemService) Create(userId, taskId int, item types.TaskItem) (int, erro
 
 	return i.repo.Create(taskId, item)
 }
+
+func (i *ItemService) GetAll(userId, taskId int) ([]types.TaskItem, error) {
+	return i.repo.GetAll(userId, taskId)
+}
