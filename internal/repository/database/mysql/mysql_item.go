@@ -59,3 +59,15 @@ func (i *itemMySQL) GetAll(userId, taskId int) ([]types.TaskItem, error) {
 
 	return items, nil
 }
+
+func (i *itemMySQL) GetById(userId, itemId int) (types.TaskItem, error) {
+	var item types.TaskItem
+	query := fmt.Sprintf("SELECT ti.id, ti.title, ti.description FROM %s ti INNER JOIN %s li on li.item_id = ti.id INNER JOIN %s ul on ul.task_id = li.task_id WHERE ti.id = ? AND ul.user_id = ?",
+		itemsTable, tasksItemsTable, userTasksTable)
+
+	if err := i.db.Get(&item, query, itemId, userId); err != nil {
+		return types.TaskItem{}, err
+	}
+
+	return item, nil
+}
