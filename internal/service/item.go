@@ -26,3 +26,7 @@ func (i *ItemService) Create(userId, taskId int, item types.TaskItem) (int, erro
 func (i *ItemService) GetAll(userId, taskId int) ([]types.TaskItem, error) {
 	return i.repo.GetAll(userId, taskId)
 }
+
+func (i *ItemService) GetById(userId, itemId int) (types.TaskItem, error) {
+	return i.repo.GetById(userId, itemId)
+}
