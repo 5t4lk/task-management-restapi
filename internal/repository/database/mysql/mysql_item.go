@@ -98,5 +98,17 @@ func (i *itemMySQL) Update(userId, itemId int, input types.UpdateItemInput) erro
 	logrus.Debugf("args: %v", args)
 
 	_, err := i.db.Exec(query, args...)
+
+	return err
+}
+
+func (i *itemMySQL) Delete(userId, itemId int) error {
+	query := fmt.Sprintf(`DELETE ti FROM %s ti
+			JOIN %s li ON ti.id = li.item_id
+			JOIN %s ul ON li.task_id = ul.task_id
+			WHERE ul.user_id = ? AND ti.id = ?`,
+		itemsTable, tasksItemsTable, userTasksTable)
+	_, err := i.db.Exec(query, userId, itemId)
+
 	return err
 }
