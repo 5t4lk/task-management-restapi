@@ -13,7 +13,7 @@
 
 ### Endpoints:
 
-### - POST /auth/sign-up
+### POST /auth/sign-up
 
 Creates new user
 
@@ -59,7 +59,7 @@ Creates new task
 } 
 ```
 
-### GET /api/bookmarks
+### GET /api/tasks
 
 Returns all user tasks
 
@@ -100,7 +100,7 @@ make build
 make run
 ```
 
-If you are launching application first time, you need to apply migrations:
+If you are launching application first time, you need to apply migrations and set a password for your database in docker-compose file:
 
 ```
 make migrate
