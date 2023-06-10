@@ -5,6 +5,8 @@ import (
 	"task-management/internal/types"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Authorization interface {
 	CreateUser(user types.User) (int, error)
 	GenerateToken(username, password string) (string, error)
