@@ -2,6 +2,7 @@ package handler
 
 import (
 	"bytes"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 	"github.com/magiconair/properties/assert"
@@ -16,15 +17,15 @@ func TestHandler_signUp(t *testing.T) {
 	type mockBehavior func(s *mock_service.MockAuthorization, user types.User)
 
 	testTable := []struct {
-		name                string
-		inputBody           string
-		inputUser           types.User
-		mockBehavior        mockBehavior
-		expectedStatusCode  int
-		expectedRequestBody string
+		name                 string
+		inputBody            string
+		inputUser            types.User
+		mockBehavior         mockBehavior
+		expectedStatusCode   int
+		expectedResponseBody string
 	}{
 		{
-			name:      "OK",
+			name:      "Ok",
 			inputBody: `{"name": "Test", "username": "test", "password": "qwerty"}`,
 			inputUser: types.User{
 				Name:     "Test",
@@ -34,8 +35,30 @@ func TestHandler_signUp(t *testing.T) {
 			mockBehavior: func(s *mock_service.MockAuthorization, user types.User) {
 				s.EXPECT().CreateUser(user).Return(1, nil)
 			},
-			expectedStatusCode:  200,
-			expectedRequestBody: `{"id":1}`,
+			expectedStatusCode:   200,
+			expectedResponseBody: `{"id":1}`,
+		},
+		{
+			name:                 "Wrong Input",
+			inputBody:            `{"username":"username"}`,
+			inputUser:            types.User{},
+			mockBehavior:         func(s *mock_service.MockAuthorization, user types.User) {},
+			expectedStatusCode:   400,
+			expectedResponseBody: `{"error":"invalid input body"}`,
+		},
+		{
+			name:      "Service Failure",
+			inputBody: `{"name": "Test", "username": "test", "password": "qwerty"}`,
+			inputUser: types.User{
+				Name:     "Test",
+				Username: "test",
+				Password: "qwerty",
+			},
+			mockBehavior: func(s *mock_service.MockAuthorization, user types.User) {
+				s.EXPECT().CreateUser(user).Return(1, errors.New("service failure"))
+			},
+			expectedStatusCode:   500,
+			expectedResponseBody: `{"error":"service failure"}`,
 		},
 	}
 
@@ -65,7 +88,7 @@ func TestHandler_signUp(t *testing.T) {
 
 			// Assert
 			assert.Equal(t, testCase.expectedStatusCode, w.Code)
-			assert.Equal(t, testCase.expectedRequestBody, w.Body.String())
+			assert.Equal(t, testCase.expectedResponseBody, w.Body.String())
 		})
 	}
 }
