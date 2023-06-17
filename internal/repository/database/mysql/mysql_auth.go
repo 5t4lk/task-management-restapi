@@ -17,17 +17,26 @@ func NewAuthMySQL(db *sqlx.DB) *AuthMySQL {
 func (a *AuthMySQL) CreateUser(user types.User) (int, error) {
 	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values (?, ?, ?)", usersTable)
 
-	result, err := a.db.Exec(query, user.Name, user.Username, user.Password)
+	_, err := a.db.Exec(query, user.Name, user.Username, user.Password)
 	if err != nil {
 		return 0, err
 	}
 
-	id, err := result.LastInsertId()
+	rows, err := a.db.Query("SELECT LAST_INSERT_ID()")
 	if err != nil {
-		return 0, nil
+		return 0, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return 0, err
+		}
+		return id, nil
 	}
 
-	return int(id), nil
+	return 0, fmt.Errorf("failed to retrieve last inserted ID")
 }
 
 func (a *AuthMySQL) GetUser(username, password string) (types.User, error) {
