@@ -23,26 +23,32 @@ func (t *TaskMySQL) Create(userId int, task types.Task) (int, error) {
 	}
 
 	createTaskQuery := fmt.Sprintf("INSERT INTO %s (title, description, status, end_date) VALUES (?, ?, ?, ?)", taskTable)
-	result, err := tx.Exec(createTaskQuery, task.Title, task.Description, task.Status, task.EndDate)
+	_, err = tx.Exec(createTaskQuery, task.Title, task.Description, task.Status, task.EndDate)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	id, err := result.LastInsertId()
+	var id int64
+	err = tx.QueryRow("SELECT LAST_INSERT_ID()").Scan(&id)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	createUsersTaskQuery := fmt.Sprintf("INSERT INTO %s (user_id, task_id) VALUES (?, ?)", userTasksTable)
-	_, err = tx.Exec(createUsersTaskQuery, userId, id)
+	createUserTaskQuery := fmt.Sprintf("INSERT INTO %s (user_id, task_id) VALUES (?, ?)", userTasksTable)
+	_, err = tx.Exec(createUserTaskQuery, userId, id)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	return int(id), tx.Commit()
+	err = tx.Commit()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), nil
 }
 
 func (t *TaskMySQL) GetAll(userId int) ([]types.Task, error) {
