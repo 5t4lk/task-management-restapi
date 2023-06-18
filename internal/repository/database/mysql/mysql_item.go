@@ -23,20 +23,21 @@ func (i *itemMySQL) Create(taskId int, item types.TaskItem) (int, error) {
 	}
 
 	createItemQuery := fmt.Sprintf("INSERT INTO %s (title, description) VALUES (?, ?)", itemsTable)
-	result, err := tx.Exec(createItemQuery, item.Title, item.Description)
+	_, err = tx.Exec(createItemQuery, item.Title, item.Description)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
-	itemId, err := result.LastInsertId()
+	var id int64
+	err = tx.QueryRow("SELECT LAST_INSERT_ID()").Scan(&id)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
 	}
 
 	createTaskItemsQuery := fmt.Sprintf("INSERT INTO %s (task_id, item_id) VALUES (?, ?)", tasksItemsTable)
-	_, err = tx.Exec(createTaskItemsQuery, taskId, itemId)
+	_, err = tx.Exec(createTaskItemsQuery, taskId, id)
 	if err != nil {
 		tx.Rollback()
 		return 0, err
@@ -48,7 +49,7 @@ func (i *itemMySQL) Create(taskId int, item types.TaskItem) (int, error) {
 		return 0, err
 	}
 
-	return int(itemId), nil
+	return int(id), nil
 }
 
 func (i *itemMySQL) GetAll(userId, taskId int) ([]types.TaskItem, error) {
