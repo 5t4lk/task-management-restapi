@@ -57,6 +57,26 @@ func TestNewItemMySQL(t *testing.T) {
 			want: 1,
 		},
 		{
+			name: "Empty Fields",
+			input: args{
+				taskId: 1,
+				item: types.TaskItem{
+					Title:       "",
+					Description: "test description",
+				},
+			},
+			mock: func(args args, id int) {
+				mock.ExpectBegin()
+
+				mock.ExpectExec("INSERT INTO items").
+					WithArgs("", "test description").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+
+				mock.ExpectRollback()
+			},
+			wantErr: true,
+		},
+		{
 			name: "Empty fields",
 			mock: func(args args, id int) {
 				mock.ExpectBegin()
