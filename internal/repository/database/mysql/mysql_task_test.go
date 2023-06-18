@@ -58,6 +58,28 @@ func TestItemMySQL_Create(t *testing.T) {
 			},
 			want: 1,
 		},
+		{
+			name: "Empty fields",
+			mock: func() {
+				mock.ExpectBegin()
+
+				mock.ExpectExec("INSERT INTO tasks").
+					WithArgs("", "test description", "test status", "test end date").
+					WillReturnResult(sqlmock.NewResult(0, 0))
+
+				mock.ExpectRollback()
+			},
+			input: args{
+				userId: 1,
+				task: types.Task{
+					Title:       "",
+					Description: "test description",
+					Status:      "test status",
+					EndDate:     "test end date",
+				},
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, testCase := range tests {
